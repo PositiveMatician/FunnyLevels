@@ -30,6 +30,9 @@ init_db()
 
 @app.route('/')
 def index():
+    user_agent = request.headers.get('User-Agent', '').lower()
+    if 'mobi' in user_agent or 'android' in user_agent or 'iphone' in user_agent or request.args.get('mobile') == '1':
+        return render_template('mobile.html')
     return render_template('index.html')
 
 @app.route('/api/state')

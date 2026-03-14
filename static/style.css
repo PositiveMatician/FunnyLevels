@@ -456,12 +456,87 @@ body {
     border-top: 3px dashed #111;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .header-left {
+        flex-direction: column;
+        text-align: center;
+        width: 100%;
+    }
+
     .site-title {
-        font-size: 1.4rem;
+        font-size: 1.8rem;
+    }
+
+    .points-badge {
+        font-size: 1rem;
+        padding: 4px 10px;
+    }
+
+    .reset-btn, .admin-btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
     }
 
     .levels-grid {
         grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .level-card {
+        box-shadow: 4px 4px 0 #111;
+    }
+
+    .level-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+
+    .level-title {
+        font-size: 1.2rem;
+    }
+
+    .video-link {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+
+    .pts-chip {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+        padding: 4px;
+    }
+
+    .modal {
+        padding: 16px;
+        box-shadow: 4px 4px 0 #111;
+    }
+
+    .modal h2 {
+        font-size: 1.5rem;
+    }
+
+    .btn-pink, .btn-yellow {
+        width: 100%;
+        text-align: center;
+    }
+
+    .pw-box {
+        width: 90%;
+        padding: 20px;
     }
 }

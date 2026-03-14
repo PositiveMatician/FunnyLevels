@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FunnyLevels</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── VARIABLES ── */
+        :root {
+            --yellow: #FFE600;
+            --pink: #FF2D9B;
+            --black: #1a0a0a;
+            --white: #fff;
+            --border: 5px solid var(--black);
+            --border-thick: 7px solid var(--black);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--pink);
+            font-family: 'Lilita One', cursive;
+            min-height: 100vh;
+        }
+
+        /* ════════════════════════════════════════
+   DESKTOP  (≥ 640px)
+════════════════════════════════════════ */
+        #desktop-view {
+            display: block;
+            padding: 20px;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        /* header */
+        .d-header {
+            background: var(--yellow);
+            border: var(--border-thick);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .d-header-left {
+            background: var(--pink);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 1.5rem;
+            color: var(--black);
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .d-header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .lock-box {
+            background: var(--pink);
+            border: var(--border);
+            border-radius: 8px;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .d-unlock-hint {
+            width: 100%;
+            text-align: right;
+            font-size: 1rem;
+            color: var(--black);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+        }
+
+        .progress-wrap {
+            background: var(--pink);
+            border: var(--border);
+            border-radius: 8px;
+            height: 15px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .progress-fill {
+            background: var(--black);
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.4s ease;
+        }
+
+        /* tabs */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .tab {
+            background: var(--yellow);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 7px 13px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+            color: var(--black);
+            font-family: 'Lilita One', cursive;
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: var(--white);
+        }
+
+        .tab.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .tab .tab-lock {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            font-size: 0.6rem;
+            background: var(--black);
+            color: var(--yellow);
+            border-radius: 50%;
+            width: 17px;
+            height: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* level card */
+        .level-card {
+            background: var(--yellow);
+            border: var(--border-thick);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .level-header {
+            font-size: 1.8rem;
+            color: var(--black);
+            margin-bottom: 6px;
+        }
+
+        .level-desc {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: var(--black);
+            margin-bottom: 16px;
+            background: var(--pink);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 8px 14px;
+            display: inline-block;
+        }
+
+        .sites-box {
+            background: var(--pink);
+            border: var(--border-thick);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .site-item {
+            background: var(--yellow);
+            border: var(--border);
+            border-radius: 10px;
+            padding: 13px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .site-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 var(--black);
+        }
+
+        .site-name {
+            font-size: 1.15rem;
+            color: var(--black);
+        }
+
+        .site-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pts-badge {
+            background: var(--black);
+            color: var(--yellow);
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 0.95rem;
+        }
+
+        .watch-btn {
+            background: var(--pink);
+            color: var(--black);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-family: 'Lilita One', cursive;
+            font-size: 1.05rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.12s;
+        }
+
+        .watch-btn:hover {
+            background: var(--white);
+            transform: scale(1.05);
+        }
+
+        .watch-btn.claimed {
+            background: #ccc;
+            cursor: default;
+            color: #666;
+            border-color: #999;
+        }
+
+        .watch-btn.claimed:hover {
+            transform: none;
+            background: #ccc;
+        }
+
+        /* empty level */
+        .empty-level {
+            background: var(--pink);
+            border: var(--border-thick);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--black);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+        }
+
+        /* locked overlay */
+        .locked-overlay {
+            background: var(--pink);
+            border: var(--border-thick);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .locked-overlay .lock-big {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .locked-overlay p {
+            font-size: 1.4rem;
+            color: var(--black);
+            margin-bottom: 8px;
+        }
+
+        .locked-overlay .pts-needed {
+            background: var(--black);
+            color: var(--yellow);
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-size: 1.15rem;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        /* ════════════════════════════════════════
+   MOBILE  (< 640px)
+════════════════════════════════════════ */
+        #mobile-view {
+            display: none;
+        }
+
+        .m-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--yellow);
+            border-bottom: var(--border-thick);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .m-header-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .m-pts-line {
+            font-size: 1.25rem;
+            color: var(--black);
+        }
+
+        .m-lvl-line {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 0.75rem;
+            color: var(--black);
+        }
+
+        .m-progress-wrap {
+            background: rgba(0, 0, 0, 0.18);
+            border-radius: 6px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 4px;
+            max-width: 55vw;
+        }
+
+        .m-progress-fill {
+            background: var(--black);
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.4s ease;
+        }
+
+        .m-header-right {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .m-icon-btn {
+            background: var(--pink);
+            border: 4px solid var(--black);
+            border-radius: 8px;
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* pill strip */
+        .m-level-strip {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 10px 14px;
+            background: var(--pink);
+            border-bottom: 5px solid var(--black);
+            scrollbar-width: none;
+        }
+
+        .m-level-strip::-webkit-scrollbar {
+            display: none;
+        }
+
+        .m-level-pill {
+            flex-shrink: 0;
+            background: var(--yellow);
+            border: 4px solid var(--black);
+            border-radius: 50px;
+            padding: 7px 15px;
+            font-family: 'Lilita One', cursive;
+            font-size: 0.88rem;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.12s;
+            white-space: nowrap;
+            color: var(--black);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .m-level-pill.active {
+            background: var(--white);
+            transform: scale(1.08);
+        }
+
+        .m-level-pill.locked {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .m-pill-lock {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 0.5rem;
+            background: var(--black);
+            color: var(--yellow);
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* content */
+        .m-content {
+            padding: 14px 14px 90px;
+        }
+
+        .m-level-title {
+            font-size: 1.25rem;
+            color: var(--black);
+            background: var(--yellow);
+            border: 4px solid var(--black);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+        }
+
+        .m-level-desc {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 0.85rem;
+            color: var(--black);
+            background: var(--yellow);
+            border: 3px solid var(--black);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 14px;
+        }
+
+        .m-video-card {
+            background: var(--yellow);
+            border: 5px solid var(--black);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            transition: transform 0.1s;
+        }
+
+        .m-video-card:active {
+            transform: scale(0.975);
+        }
+
+        .m-video-num {
+            font-size: 0.7rem;
+            background: var(--black);
+            color: var(--yellow);
+            border-radius: 6px;
+            padding: 2px 10px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .m-video-name {
+            font-size: 0.98rem;
+            color: var(--black);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .m-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .m-pts-pill {
+            background: var(--black);
+            color: var(--yellow);
+            border-radius: 50px;
+            padding: 5px 14px;
+            font-size: 0.88rem;
+        }
+
+        .m-watch-btn {
+            background: var(--pink);
+            color: var(--black);
+            border: 4px solid var(--black);
+            border-radius: 50px;
+            padding: 9px 22px;
+            font-family: 'Lilita One', cursive;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.1s;
+        }
+
+        .m-watch-btn:active {
+            transform: scale(0.93);
+        }
+
+        .m-watch-btn.claimed {
+            background: #ccc;
+            color: #666;
+            border-color: #999;
+            cursor: default;
+        }
+
+        /* mobile locked / empty */
+        .m-locked-screen,
+        .m-empty-screen {
+            background: var(--yellow);
+            border: 5px solid var(--black);
+            border-radius: 14px;
+            padding: 36px 16px;
+            text-align: center;
+        }
+
+        .m-locked-screen .big-lock {
+            font-size: 4.5rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .m-locked-screen p,
+        .m-empty-screen p {
+            font-size: 1.1rem;
+            color: var(--black);
+            margin-bottom: 8px;
+            line-height: 1.35;
+        }
+
+        .m-locked-screen .need-badge {
+            background: var(--black);
+            color: var(--yellow);
+            border-radius: 8px;
+            padding: 8px 22px;
+            font-size: 1rem;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        /* bottom bar */
+        .m-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--yellow);
+            border-top: var(--border-thick);
+            padding: 10px 16px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 99;
+        }
+
+        .m-bottom-total {
+            font-size: 1.05rem;
+            color: var(--black);
+        }
+
+        .m-next-level-hint {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 0.78rem;
+            color: var(--black);
+            background: var(--pink);
+            border: 3px solid var(--black);
+            border-radius: 6px;
+            padding: 5px 10px;
+        }
+
+        /* ════════════════════════════════════════
+   SHARED BUTTONS
+════════════════════════════════════════ */
+        .btn-pink {
+            background: var(--pink);
+            color: var(--black);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-family: 'Lilita One', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.12s;
+        }
+
+        .btn-pink:hover {
+            background: var(--white);
+            transform: scale(1.03);
+        }
+
+        .btn-yellow {
+            background: var(--yellow);
+            color: var(--black);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-family: 'Lilita One', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.12s;
+        }
+
+        .btn-yellow:hover {
+            background: var(--white);
+            transform: scale(1.03);
+        }
+
+        .admin-btn {
+            background: var(--black);
+            color: var(--yellow);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-family: 'Lilita One', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.12s;
+            white-space: nowrap;
+        }
+
+        .admin-btn:hover {
+            background: #333;
+            transform: scale(1.03);
+        }
+
+        .reset-btn {
+            background: var(--yellow);
+            color: var(--black);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-family: 'Lilita One', cursive;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.12s;
+        }
+
+        .reset-btn:hover {
+            background: var(--white);
+        }
+
+        /* ════════════════════════════════════════
+   PASSWORD SCREEN
+════════════════════════════════════════ */
+        .pw-screen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pw-screen.open {
+            display: flex;
+        }
+
+        .pw-box {
+            background: var(--yellow);
+            border: var(--border-thick);
+            border-radius: 16px;
+            padding: 32px 28px;
+            width: min(360px, 90vw);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .pw-box h2 {
+            font-size: 1.6rem;
+            color: var(--black);
+        }
+
+        .pw-box input {
+            padding: 10px 14px;
+            border: var(--border);
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            background: var(--white);
+            color: var(--black);
+            outline: none;
+            width: 100%;
+        }
+
+        .pw-box-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .pw-error {
+            color: #c00;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+
+        /* ════════════════════════════════════════
+   ADMIN MODAL
+════════════════════════════════════════ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 1500;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border: var(--border-thick);
+            border-radius: 16px;
+            padding: 28px 24px;
+            width: min(560px, 100%);
+            margin: auto;
+        }
+
+        .modal h2 {
+            font-size: 1.6rem;
+            color: var(--black);
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .modal h3 {
+            font-family: 'Lilita One', cursive;
+            font-size: 1.1rem;
+            color: var(--black);
+            margin-bottom: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 14px;
+        }
+
+        .form-row label {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 0.85rem;
+            color: var(--black);
+        }
+
+        .form-row input,
+        .form-row select {
+            padding: 9px 12px;
+            border: var(--border);
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: var(--black);
+            background: var(--yellow);
+            outline: none;
+            width: 100%;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .modal-links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 240px;
+            overflow-y: auto;
+            margin-bottom: 18px;
+            padding-right: 4px;
+        }
+
+        .modal-link-item {
+            background: var(--yellow);
+            border: 4px solid var(--black);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .modal-link-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+
+        .modal-link-title {
+            font-size: 0.9rem;
+            color: var(--black);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .modal-link-meta {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 0.72rem;
+            color: #444;
+        }
+
+        .del-btn {
+            background: #c00;
+            color: var(--white);
+            border: 3px solid var(--black);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            font-family: 'Lilita One', cursive;
+            transition: background 0.12s;
+        }
+
+        .del-btn:hover {
+            background: #900;
+        }
+
+        .reset-section {
+            background: #fff0f0;
+            border: 3px solid #c00;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 4px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 3px solid #eee;
+            margin: 16px 0;
+        }
+
+        /* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--black);
+            color: var(--yellow);
+            padding: 13px 26px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            border: 3px solid var(--yellow);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 9999;
+            white-space: nowrap;
+            font-family: 'Lilita One', cursive;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* ════════════════════════════════════════
+   RESPONSIVE SWITCH
+════════════════════════════════════════ */
+        @media (max-width: 639px) {
+            #desktop-view {
+                display: none !important;
+            }
+
+            #mobile-view {
+                display: block !important;
+            }
+
+            .toast {
+                bottom: 80px;
+                font-size: 1rem;
+                padding: 11px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ████████████████  DESKTOP  ████████████████ -->
+    <div id="desktop-view">
+        <div class="d-header">
+            <div class="d-header-left">
+                <span>Level <span id="d-lvl">1</span></span>
+                <span>Points: <span id="d-pts">0</span></span>
+                <button class="reset-btn" onclick="resetData()">🔄 Reset</button>
+            </div>
+            <div class="d-header-right">
+                <div class="lock-box">🔒</div>
+                <button class="admin-btn" onclick="openAdminAuth()">⚙️ ADMIN</button>
+            </div>
+            <div class="d-unlock-hint" id="d-unlock-hint">
+                Unlock next level ( <span id="d-unlock-pts">—</span> pt. )
+                <div class="progress-wrap">
+                    <div class="progress-fill" id="d-progress" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tabs" id="d-tabs"></div>
+        <div class="level-card" id="d-card"></div>
+    </div>
+
+    <!-- ████████████████  MOBILE  ████████████████ -->
+    <div id="mobile-view">
+        <div class="m-header">
+            <div class="m-header-info">
+                <div class="m-pts-line">⭐ <span id="m-pts">0</span> pts</div>
+                <div class="m-lvl-line" id="m-unlock-hint">Loading...</div>
+                <div class="m-progress-wrap">
+                    <div class="m-progress-fill" id="m-progress" style="width:0%"></div>
+                </div>
+            </div>
+            <div class="m-header-right">
+                <div class="m-icon-btn" onclick="resetData()" title="Reset">🔄</div>
+                <div class="m-icon-btn" onclick="openAdminAuth()" title="Admin">⚙️</div>
+            </div>
+        </div>
+        <div class="m-level-strip" id="m-strip"></div>
+        <div class="m-content" id="m-content"></div>
+        <div class="m-bottom-bar">
+            <div class="m-bottom-total">Total: <span id="m-pts-bot">0</span> pts</div>
+            <div class="m-next-level-hint" id="m-bot-hint">Level — / 10</div>
+        </div>
+    </div>
+
+    <!-- ████████████████  PASSWORD SCREEN  ████████████████ -->
+    <div class="pw-screen" id="pwScreen">
+        <div class="pw-box">
+            <h2>🔐 Admin Access</h2>
+            <input type="password" id="pwInput" placeholder="Enter password…"
+                onkeydown="if(event.key==='Enter') checkPw()">
+            <div class="pw-box-btns">
+                <button class="btn-pink" onclick="checkPw()">Enter</button>
+                <button class="btn-yellow" onclick="closePw()">Cancel</button>
+            </div>
+            <div class="pw-error" id="pwError"></div>
+        </div>
+    </div>
+
+    <!-- ████████████████  ADMIN MODAL  ████████████████ -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal">
+            <h2>⚙️ Admin Panel</h2>
+
+            <div class="form-row">
+                <label>Level</label>
+                <select id="adminLevel">
+                    <option value="1">Level 1 — Barely a Chuckle</option>
+                    <option value="2">Level 2 — Mild Giggle</option>
+                    <option value="3">Level 3 — Heh 😄</option>
+                    <option value="4">Level 4 — Lol 😆</option>
+                    <option value="5">Level 5 — Ha-Ha Zone</option>
+                    <option value="6">Level 6 — Genuine Laugh</option>
+                    <option value="7">Level 7 — Hard Laugh</option>
+                    <option value="8">Level 8 — Can't Breathe</option>
+                    <option value="9">Level 9 — On The Floor</option>
+                    <option value="10">Level 10 — Ultimate Funnies 💀</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Link Title</label>
+                <input type="text" id="adminTitle" placeholder="e.g. Cat falls off couch">
+            </div>
+            <div class="form-row">
+                <label>URL</label>
+                <input type="url" id="adminUrl" placeholder="https://...">
+            </div>
+            <div class="form-row">
+                <label>Points Value</label>
+                <select id="adminPts">
+                    <option value="5">5 pts</option>
+                    <option value="10" selected>10 pts</option>
+                    <option value="15">15 pts</option>
+                    <option value="20">20 pts</option>
+                    <option value="25">25 pts</option>
+                    <option value="30">30 pts</option>
+                </select>
+            </div>
+            <div class="modal-btns" style="margin-bottom:20px;">
+                <button class="btn-pink" onclick="adminAddLink()">➕ Add Link</button>
+            </div>
+
+            <h3>Existing Links</h3>
+            <div class="modal-links-list" id="adminLinksList"></div>
+
+            <hr class="divider">
+            <div class="reset-section">
+                <h3>⚠️ Danger Zone</h3>
+                <p style="font-family:'Nunito',sans-serif;font-weight:800;font-size:0.85rem;margin-bottom:10px;">
+                    Resets your points and visited links.
+                </p>
+                <button class="btn-yellow" onclick="resetData()" style="border-color:#c00;color:#c00;">🗑️ Reset My
+                    Data</button>
+            </div>
+
+            <div class="modal-btns" style="margin-top:20px;">
+                <button class="btn-yellow" onclick="closeAdmin()">✅ Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        /* ══════════════════════════════════════════════════════
+           LEVEL CONFIG  — unlock thresholds & descriptions
+        ══════════════════════════════════════════════════════ */
+        const LEVEL_META = [
+            { unlockAt: 0, nextUnlock: 50, desc: "😐 Barely a chuckle. But hey, it starts somewhere." },
+            { unlockAt: 50, nextUnlock: 150, desc: "🙂 A small smile is guaranteed." },
+            { unlockAt: 150, nextUnlock: 300, desc: "😄 Actual laughing may occur." },
+            { unlockAt: 300, nextUnlock: 500, desc: "😂 Do NOT drink anything while watching." },
+            { unlockAt: 500, nextUnlock: 750, desc: "🤣 Viewers have reported mild abdominal pain." },
+            { unlockAt: 750, nextUnlock: 1050, desc: "😵 People around you WILL stare." },
+            { unlockAt: 1050, nextUnlock: 1400, desc: "😭😂 You might need a tissue or two." },
+            { unlockAt: 1400, nextUnlock: 1800, desc: "🪑💨 Don't sit near the edge." },
+            { unlockAt: 1800, nextUnlock: 2300, desc: "☠️ Medical disclaimer: consult a doctor if laughing > 10 min." },
+            { unlockAt: 2300, nextUnlock: null, desc: "🏆 The funniest things on the internet. You earned this." },
+        ];
+
+        /* ══════════════════════════════════════════════════════
+           STATE
+        ══════════════════════════════════════════════════════ */
+        let points = 0;
+        let visitedLinks = [];   // array of link ids
+        let allLinks = [];   // from /api/state  [{id,level,title,url,pts}]
+        let activeLevel = 0;    // 0-indexed
+        let adminPw = '';
+
+        /* ══════════════════════════════════════════════════════
+           API HELPERS
+        ══════════════════════════════════════════════════════ */
+        async function apiGet(url) {
+            const r = await fetch(url); return r.json();
+        }
+        async function apiPost(url, body) {
+            const r = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            }); return r.json();
+        }
+        async function apiDelete(url, body) {
+            const r = await fetch(url, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            }); return r.json();
+        }
+
+        /* ══════════════════════════════════════════════════════
+           LOAD STATE
+        ══════════════════════════════════════════════════════ */
+        async function loadState() {
+            const data = await apiGet('/api/state');
+            points = data.points || 0;
+            visitedLinks = data.visited_links || [];
+            allLinks = data.links || [];
+        }
+
+        /* ══════════════════════════════════════════════════════
+           HELPERS
+        ══════════════════════════════════════════════════════ */
+        const isUnlocked = i => points >= LEVEL_META[i].unlockAt;
+
+        function bestLevel() {
+            for (let i = LEVEL_META.length - 1; i >= 0; i--)
+                if (isUnlocked(i)) return i;
+            return 0;
+        }
+
+        function pct(i) {
+            const m = LEVEL_META[i];
+            if (!m.nextUnlock) return 100;
+            return Math.min(100, Math.round(((points - m.unlockAt) / (m.nextUnlock - m.unlockAt)) * 100));
+        }
+
+        function linksForLevel(lvlNum) {  // lvlNum is 1-based
+            return allLinks.filter(l => Number(l.level) === lvlNum);
+        }
+
+        /* ══════════════════════════════════════════════════════
+           WATCH HANDLER
+        ══════════════════════════════════════════════════════ */
+        async function handleWatch(e, id, pts) {
+            if (visitedLinks.includes(id)) { e.preventDefault(); return; }
+            const res = await apiPost('/api/award', { id, pts: Number(pts) });
+            if (res.success) {
+                points = res.points;
+                visitedLinks.push(id);
+                showToast(`+${pts} pts earned! 🎉`);
+                renderAll();
+            }
+        }
+        window.handleWatch = handleWatch;
+
+        /* ══════════════════════════════════════════════════════
+           RESET
+        ══════════════════════════════════════════════════════ */
+        async function resetData() {
+            if (!confirm('Reset all your points and progress?')) return;
+            await apiPost('/api/reset', {});
+            points = 0; visitedLinks = []; activeLevel = 0;
+            showToast('Progress reset! 🔄');
+            renderAll();
+        }
+        window.resetData = resetData;
+
+        /* ══════════════════════════════════════════════════════
+           TOAST
+        ══════════════════════════════════════════════════════ */
+        let toastTmr;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(toastTmr);
+            toastTmr = setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        /* ══════════════════════════════════════════════════════
+           SET LEVEL
+        ══════════════════════════════════════════════════════ */
+        function setLevel(i) { activeLevel = i; renderAll(); }
+        window.setLevel = setLevel;
+
+        /* ══════════════════════════════════════════════════════
+           DESKTOP RENDER
+        ══════════════════════════════════════════════════════ */
+        function renderDesktop() {
+            const meta = LEVEL_META[activeLevel];
+            const lvlNum = activeLevel + 1;
+
+            document.getElementById('d-lvl').textContent = lvlNum;
+            document.getElementById('d-pts').textContent = points;
+
+            const hint = document.getElementById('d-unlock-hint');
+            if (meta.nextUnlock) {
+                hint.innerHTML = `Unlock next level ( <span>${meta.nextUnlock}</span> pt. )
+      <div class="progress-wrap">
+        <div class="progress-fill" style="width:${pct(activeLevel)}%"></div>
+      </div>`;
+            } else {
+                hint.textContent = '🏆 MAX LEVEL REACHED!';
+            }
+
+            // tabs
+            document.getElementById('d-tabs').innerHTML = LEVEL_META.map((m, i) => `
+    <button class="tab${i === activeLevel ? ' active' : ''}${!isUnlocked(i) ? ' locked' : ''}"
+      onclick="${isUnlocked(i) ? `setLevel(${i})` : `showToast('🔒 Need ${m.unlockAt} pts!')`}">
+      Lvl ${i + 1}${!isUnlocked(i) ? '<span class="tab-lock">🔒</span>' : ''}
+    </button>`).join('');
+
+            // card
+            const card = document.getElementById('d-card');
+            if (!isUnlocked(activeLevel)) {
+                card.innerHTML = `<div class="locked-overlay">
+      <span class="lock-big">🔒</span>
+      <p>Level ${lvlNum}</p><p>Earn more points to unlock.</p>
+      <span class="pts-needed">Required: ${meta.unlockAt} pts</span>
+    </div>`; return;
+            }
+
+            const links = linksForLevel(lvlNum);
+            const sitesHTML = links.length
+                ? links.map(s => {
+                    const done = visitedLinks.includes(s.id);
+                    return `<div class="site-item">
+          <span class="site-name">${s.title}</span>
+          <div class="site-right">
+            <span class="pts-badge">+${s.pts} pts</span>
+            <a href="${s.url}" target="_blank" rel="noopener"
+               class="watch-btn${done ? ' claimed' : ''}"
+               onclick="${done ? 'return false' : `handleWatch(event,'${s.id}',${s.pts})`}">
+              ${done ? '✅ Claimed' : '▶ Watch'}
+            </a>
+          </div>
+        </div>`;
+                }).join('')
+                : `<div class="empty-level">No videos added to this level yet. Ask your admin! 😅</div>`;
+
+            card.innerHTML = `
+    <div class="level-header">Level ${lvlNum}</div>
+    <div class="level-desc">${meta.desc}</div>
+    <div class="sites-box">${sitesHTML}</div>`;
+        }
+
+        /* ══════════════════════════════════════════════════════
+           MOBILE RENDER
+        ══════════════════════════════════════════════════════ */
+        function renderMobile() {
+            const meta = LEVEL_META[activeLevel];
+            const lvlNum = activeLevel + 1;
+
+            document.getElementById('m-pts').textContent = points;
+            document.getElementById('m-pts-bot').textContent = points;
+            document.getElementById('m-bot-hint').textContent = `Level ${lvlNum} / 10`;
+
+            if (meta.nextUnlock) {
+                document.getElementById('m-unlock-hint').textContent = `Next level at ${meta.nextUnlock} pt.`;
+                document.getElementById('m-progress').style.width = pct(activeLevel) + '%';
+            } else {
+                document.getElementById('m-unlock-hint').textContent = '🏆 MAX LEVEL!';
+                document.getElementById('m-progress').style.width = '100%';
+            }
+
+            // pills
+            document.getElementById('m-strip').innerHTML = LEVEL_META.map((m, i) => `
+    <div class="m-level-pill${i === activeLevel ? ' active' : ''}${!isUnlocked(i) ? ' locked' : ''}"
+      onclick="${isUnlocked(i) ? `setLevel(${i})` : `showToast('🔒 Need ${m.unlockAt} pts!')`}">
+      ${!isUnlocked(i) ? '<span class="m-pill-lock">🔒</span>' : ''}Lvl ${i + 1}
+    </div>`).join('');
+
+            setTimeout(() => {
+                const strip = document.getElementById('m-strip');
+                const pill = strip.children[activeLevel];
+                if (pill) pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }, 50);
+
+            // content
+            const content = document.getElementById('m-content');
+            if (!isUnlocked(activeLevel)) {
+                content.innerHTML = `<div class="m-locked-screen">
+      <span class="big-lock">🔒</span>
+      <p>Level ${lvlNum}</p>
+      <p>Watch videos and earn points to unlock!</p>
+      <span class="need-badge">Need ${meta.unlockAt} pts</span>
+    </div>`; return;
+            }
+
+            const links = linksForLevel(lvlNum);
+            const cardsHTML = links.length
+                ? links.map((s, si) => {
+                    const done = visitedLinks.includes(s.id);
+                    return `<div class="m-video-card">
+          <span class="m-video-num">VIDEO ${si + 1}</span>
+          <div class="m-video-name">${s.title}</div>
+          <div class="m-card-footer">
+            <span class="m-pts-pill">+${s.pts} pts</span>
+            <a href="${s.url}" target="_blank" rel="noopener"
+               class="m-watch-btn${done ? ' claimed' : ''}"
+               onclick="${done ? 'return false' : `handleWatch(event,'${s.id}',${s.pts})`}">
+              ${done ? '✅ Done' : '▶ Watch'}
+            </a>
+          </div>
+        </div>`;
+                }).join('')
+                : `<div class="m-empty-screen"><p>No videos here yet. Ask your admin! 😅</p></div>`;
+
+            content.innerHTML = `
+    <div class="m-level-title">Level ${lvlNum}</div>
+    <div class="m-level-desc">${meta.desc}</div>
+    ${cardsHTML}`;
+        }
+
+        /* ══════════════════════════════════════════════════════
+           RENDER ALL
+        ══════════════════════════════════════════════════════ */
+        function renderAll() {
+            renderDesktop();
+            renderMobile();
+        }
+
+        /* ══════════════════════════════════════════════════════
+           ADMIN — AUTH
+        ══════════════════════════════════════════════════════ */
+        function openAdminAuth() {
+            document.getElementById('pwInput').value = '';
+            document.getElementById('pwError').textContent = '';
+            document.getElementById('pwScreen').classList.add('open');
+            setTimeout(() => document.getElementById('pwInput').focus(), 100);
+        }
+        function closePw() { document.getElementById('pwScreen').classList.remove('open'); }
+
+        async function checkPw() {
+            const pw = document.getElementById('pwInput').value.trim();
+            // Test by attempting to fetch admin links with this password
+            // We'll verify by trying to POST a dummy check — or simply open the modal
+            // and let a real action fail. For simplicity, store it and verify on first real action.
+            adminPw = pw;
+            closePw();
+            openAdmin();
+        }
+        window.openAdminAuth = openAdminAuth;
+        window.closePw = closePw;
+        window.checkPw = checkPw;
+
+        /* ══════════════════════════════════════════════════════
+           ADMIN — MODAL
+        ══════════════════════════════════════════════════════ */
+        function openAdmin() {
+            document.getElementById('adminModal').classList.add('open');
+            renderAdminLinks();
+        }
+        function closeAdmin() { document.getElementById('adminModal').classList.remove('open'); }
+        window.closeAdmin = closeAdmin;
+
+        function renderAdminLinks() {
+            const list = document.getElementById('adminLinksList');
+            if (!allLinks.length) {
+                list.innerHTML = '<p style="font-family:Nunito,sans-serif;font-size:0.85rem;color:#666;text-align:center;">No links yet.</p>';
+                return;
+            }
+            list.innerHTML = allLinks.map(l => `
+    <div class="modal-link-item">
+      <div class="modal-link-info">
+        <span class="modal-link-title">Lvl ${l.level} — ${l.title}</span>
+        <span class="modal-link-meta">${l.pts} pts · ${l.url.substring(0, 40)}${l.url.length > 40 ? '…' : ''}</span>
+      </div>
+      <button class="del-btn" onclick="adminDeleteLink('${l.id}')">🗑️</button>
+    </div>`).join('');
+        }
+
+        async function adminAddLink() {
+            const level = Number(document.getElementById('adminLevel').value);
+            const title = document.getElementById('adminTitle').value.trim();
+            const url = document.getElementById('adminUrl').value.trim();
+            const pts = Number(document.getElementById('adminPts').value);
+
+            if (!title || !url) { showToast('⚠️ Fill in title and URL!'); return; }
+
+            const id = 'link_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+            const res = await apiPost('/api/admin/links', { password: adminPw, id, level, title, url, pts });
+
+            if (res.error) { showToast('❌ Wrong password!'); return; }
+            showToast('✅ Link added!');
+            document.getElementById('adminTitle').value = '';
+            document.getElementById('adminUrl').value = '';
+            await loadState();
+            renderAll();
+            renderAdminLinks();
+        }
+        window.adminAddLink = adminAddLink;
+
+        async function adminDeleteLink(id) {
+            if (!confirm('Delete this link?')) return;
+            const res = await apiDelete(`/api/admin/links/${id}`, { password: adminPw });
+            if (res.error) { showToast('❌ Wrong password!'); return; }
+            showToast('🗑️ Link deleted!');
+            await loadState();
+            renderAll();
+            renderAdminLinks();
+        }
+        window.adminDeleteLink = adminDeleteLink;
+
+        /* ══════════════════════════════════════════════════════
+           INIT
+        ══════════════════════════════════════════════════════ */
+        (async () => {
+            await loadState();
+            activeLevel = bestLevel();
+            renderAll();
+        })();
+    </script>
+</body>
+
+</html>
