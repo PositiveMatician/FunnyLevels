@@ -25,6 +25,9 @@ def init_db():
         ''')
         db.commit()
 
+# Ensure the database is initialized when the module is loaded (e.g., by WSGI in production)
+init_db()
+
 @app.route('/')
 def index():
     return render_template('index.html')
