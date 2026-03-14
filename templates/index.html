@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>😂 FunnyLevels</title>
+    <link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <span class="site-title">😂 FunnyLevels</span>
+            <span class="points-badge" id="totalPtsDisplay">⭐ 0 pts</span>
+            <button class="reset-btn" onclick="resetAllData()" title="Reset My Progress">🔄 Reset</button>
+        </div>
+        <button class="admin-btn" onclick="openAdminAuth()">⚙️ ADMIN</button>
+    </div>
+
+    <!-- LEVELS GRID -->
+    <div class="levels-grid" id="levelsGrid"></div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ADMIN PASSWORD SCREEN -->
+    <div class="pw-screen" id="pwScreen">
+        <div class="pw-box">
+            <h2>🔐 Admin Access</h2>
+            <input type="password" id="pwInput" placeholder="Enter password..."
+                onkeydown="if(event.key==='Enter')checkPw()">
+            <div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px;">
+                <button class="btn-pink" onclick="checkPw()">Enter</button>
+                <button class="btn-yellow" onclick="closePw()">Cancel</button>
+            </div>
+            <div class="pw-error" id="pwError"></div>
+        </div>
+    </div>
+
+    <!-- ADMIN MODAL -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal">
+            <h2>⚙️ Admin Panel</h2>
+
+            <div class="form-row">
+                <label>Level</label>
+                <select id="adminLevel">
+                    <option value="1">Level 1 — Barely a Chuckle</option>
+                    <option value="2">Level 2 — Mild Giggle</option>
+                    <option value="3">Level 3 — Heh 😄</option>
+                    <option value="4">Level 4 — Lol 😆</option>
+                    <option value="5">Level 5 — Ha-Ha Zone</option>
+                    <option value="6">Level 6 — Genuine Laugh</option>
+                    <option value="7">Level 7 — Hard Laugh</option>
+                    <option value="8">Level 8 — Can't Breathe</option>
+                    <option value="9">Level 9 — On The Floor</option>
+                    <option value="10">Level 10 — Ultimate Funnies 💀</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label>Link Title</label>
+                <input type="text" id="adminTitle" placeholder="e.g. Cat falls off couch">
+            </div>
+
+            <div class="form-row">
+                <label>URL</label>
+                <input type="url" id="adminUrl" placeholder="https://...">
+            </div>
+
+            <div class="form-row">
+                <label>Points Value</label>
+                <select id="adminPts">
+                    <option value="5">5 pts</option>
+                    <option value="10" selected>10 pts</option>
+                    <option value="15">15 pts</option>
+                    <option value="20">20 pts</option>
+                    <option value="25">25 pts</option>
+                    <option value="30">30 pts</option>
+                </select>
+            </div>
+
+            <div class="modal-btns" style="margin-bottom:20px;">
+                <button class="btn-pink" onclick="adminAddLink()">➕ Add Link</button>
+            </div>
+
+            <h3 style="font-family:'Boogaloo',cursive;font-size:1.2rem;margin-bottom:10px;color:#111;">Existing Links
+            </h3>
+            <div class="modal-links-list" id="adminLinksList"></div>
+
+            <div class="reset-section">
+                <h3 style="font-family:'Boogaloo',cursive;font-size:1.2rem;margin-bottom:10px;color:#111;">⚠️ Danger
+                    Zone</h3>
+                <p style="font-size:0.85rem;font-weight:700;margin-bottom:10px;color:#111;">This resets ALL user points
+                    & visited links (useful for testing).</p>
+                <button class="btn-yellow" onclick="resetAllData()" style="border:3px solid #c00;color:#c00;">🗑️ Reset
+                    My User Data</button>
+            </div>
+
+            <div class="modal-btns" style="margin-top:20px;">
+                <button class="btn-yellow" onclick="closeAdmin()">✅ Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
