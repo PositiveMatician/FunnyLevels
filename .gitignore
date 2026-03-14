@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+funnylevels.db
+.flaskenv
+.env
+.DS_Store
